@@ -1,164 +1,316 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
+import PropTypes from "prop-types";
 import { Eye, Download, AlertTriangle } from "lucide-react";
-import Loading from "./Loading"; // Adjust the import path based on your file structure
+import Loading from "./Loading";
+
+const API_URL =
+  "https://script.google.com/macros/s/AKfycbwS-YHTgvACvH7y6TibroWMZwMA4kAgRkYUU73npOyKF9WRUpfrIGpaH2b7jy1vUK-H/exec";
 
 const useQuery = () => {
   return new URLSearchParams(useLocation().search);
 };
 
+const DetailItem = ({ label, value }) => (
+  <div className="rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-md">
+    <p className="text-sm text-gray-400">{label}</p>
+
+    <p className="mt-2 break-words text-lg font-semibold text-white">
+      {value || "-"}
+    </p>
+  </div>
+);
+
+DetailItem.propTypes = {
+  label: PropTypes.string.isRequired,
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+};
+
+const getCertificateTitle = (sheetName, fallback = "Teranis") => {
+  if (!sheetName) return `${fallback} Certificate`;
+
+  const normalizedName = String(sheetName).trim();
+
+  return `${normalizedName.replace(/_/g, " ")} Certificate`;
+};
+
 const CertificateVerifier = () => {
   const query = useQuery();
-  const ucParam = query.get("uc");
+
+  const initialCertId =
+    query.get("id")?.trim() || query.get("uc")?.trim() || "";
+
+  const [inputCertId, setInputCertId] = useState(initialCertId);
 
   const [certificateData, setCertificateData] = useState(null);
-  const [loading, setLoading] = useState(true);
+
+  const [loading, setLoading] = useState(false);
+
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    if (!ucParam || ucParam.length !== 10) {
-      setError(
-        "Certificate verification failed. Please check the provided code and try again."
-      );
-      setLoading(false);
+  const fetchCertificateInfo = async (certificateId) => {
+    const normalizedId = certificateId.trim();
+
+    if (!normalizedId) {
+      setCertificateData(null);
+      setError("Please enter a certificate ID.");
       return;
     }
 
-    const fetchCertificateInfo = async () => {
-      try {
-        const response = await axios.get(
-          `https://teranisbackend.vercel.app/verifycertificate/${ucParam}/`
-        );
-        setCertificateData(response.data);
-      } catch (err) {
-        setError(
-          "Certificate verification failed. Please check the provided code and try again."
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
+    setLoading(true);
+    setError(null);
+    setCertificateData(null);
 
-    fetchCertificateInfo();
-  }, [ucParam]);
+    try {
+      const response = await axios.get(
+        `${API_URL}?id=${encodeURIComponent(normalizedId)}`
+      );
+
+      if (response.data?.valid) {
+        setCertificateData(response.data.data);
+      } else {
+        setError("Certificate not found or invalid.");
+      }
+    } catch (err) {
+      console.error(err);
+
+      setError("Failed to verify certificate.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (initialCertId) {
+      fetchCertificateInfo(initialCertId);
+    }
+  }, [initialCertId]);
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    fetchCertificateInfo(inputCertId);
+  };
+
+  const certificateViewLink =
+    certificateData?.QR ||
+    certificateData?.PDF_URL ||
+    certificateData?.MERGED_DOC_URL ||
+    "";
+
+  const mergedDocId =
+    certificateData?.MERGED_DOC_ID_COORDINATORS ||
+    certificateData?.MERGED_DOC_ID ||
+    certificateData?.MERGED_DOC_ID__COORDINATORS;
+
+  const mergedDocUrl =
+    certificateData?.MERGED_DOC_URL_COORDINATORS ||
+    certificateData?.MERGED_DOC_URL ||
+    certificateData?.MERGED_DOC_URL__COORDINATORS;
+
+  const mergedPdfPreview = mergedDocId
+    ? `https://drive.google.com/file/d/${mergedDocId}/preview`
+    : mergedDocUrl || null;
+
+  const verificationUrl = `${window.location.origin}/verify?id=${encodeURIComponent(
+    certificateData?.CERT_ID || inputCertId
+  )}`;
+
+  const certificateTitle = `${
+    getCertificateTitle(certificateData?.EVENT_SHEET || certificateData?.EVENT)
+  }`;
+
+  const certificatePdfMedia =
+    mergedPdfPreview || mergedDocUrl || certificateViewLink || verificationUrl;
+
+  const linkedInCertificateUrl = new URL(
+    "https://www.linkedin.com/profile/add"
+  );
+
+  linkedInCertificateUrl.search = new URLSearchParams({
+    startTask: "CERTIFICATION_NAME",
+    name: certificateTitle,
+    organizationName: "Teranis",
+    certId: certificateData?.CERT_ID || inputCertId,
+    certUrl: verificationUrl,
+    issueYear: String(new Date().getFullYear()),
+    media: certificatePdfMedia,
+  }).toString();
+
+  const renderVerificationForm = (buttonLabel) => (
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-4 rounded-2xl border border-white/10 bg-black/20 p-6 backdrop-blur-lg"
+    >
+      <div>
+        <label
+          htmlFor="certificate-id"
+          className="mb-2 block text-sm font-medium text-gray-300"
+        >
+          Enter Certificate ID
+        </label>
+
+        <input
+          id="certificate-id"
+          type="text"
+          value={inputCertId}
+          onChange={(event) => setInputCertId(event.target.value)}
+          placeholder="TF2026-COOD-001"
+          className="w-full rounded-xl border border-white/10 bg-black/30 px-4 py-3 text-white placeholder:text-gray-500 outline-none transition focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20"
+        />
+      </div>
+
+      <button
+        type="submit"
+        className="w-full rounded-xl bg-cyan-600 px-4 py-3 font-semibold text-white transition hover:bg-cyan-500"
+      >
+        {buttonLabel}
+      </button>
+    </form>
+  );
 
   return (
-    <div className="min-h-screen w-screen flex items-center mt-16 md:mt-0 justify-center bg-gradient-to-br from-gray-900 via-black to-gray-800 text-gray-200 p-6">
-      <div className="bg-gray-900 bg-opacity-80 backdrop-blur-lg rounded-2xl p-8 w-full max-w-3xl text-center shadow-xl transform transition-all hover:shadow-2xl">
-        {loading ? (
-          <Loading />
-        ) : error ? (
-          <div className="bg-gray-800 bg-opacity-50 backdrop-blur-md p-6 rounded-xl shadow-inner flex flex-col items-center justify-center space-y-4">
-            <AlertTriangle className="w-12 h-12 text-red-500" />
-            <p className="text-white font-semibold text-lg">
-              Oops! Verification failed—that code looks off. Double-check and
-              try again!
+    <div className="min-h-screen w-full bg-gradient-to-br from-gray-950 via-black to-gray-900 px-4 pt-32 pb-10 text-white">
+      <div className="mx-auto w-full max-w-5xl">
+        <div className="overflow-hidden rounded-3xl border border-white/10 bg-white/5 shadow-2xl backdrop-blur-xl">
+          {/* Header */}
+          <div className="border-b border-white/10 px-6 py-8 text-center">
+            <h1 className="text-3xl font-bold md:text-4xl">
+              Certificate Verification
+            </h1>
+
+            <p className="mt-3 text-gray-400">
+              Verify Techfest certificates instantly and securely.
             </p>
           </div>
-        ) : (
-          <div className="space-y-10">
-            {/* Success Message */}
-            <p className="text-xl font-semibold text-green-400 animate-fade-in">
-              Valid Certificate ✅
-            </p>
 
-            {/* User Details */}
-            <div className="bg-gray-800 bg-opacity-50 backdrop-blur-md p-6 rounded-xl shadow-inner transition-all hover:bg-opacity-70">
-              <h3 className="text-2xl font-semibold text-white mb-6">
-                User Details
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-left">
-                <div className="flex items-center py-2">
-                  <p className="text-gray-400 font-medium min-w-[100px]">
-                    Name:
-                  </p>
-                  <p className="text-white ml-2 ">
-                    {certificateData.user_details.name}
-                  </p>
-                </div>
-                <div className="flex items-center py-2">
-                  <p className="text-gray-400 font-medium min-w-[100px]">
-                    Event:
-                  </p>
-                  <p className="text-white ml-2">
-                    {certificateData.user_details.event_name}
-                  </p>
-                </div>
-                <div className="flex items-center py-2">
-                  <p className="text-gray-400 font-medium min-w-[100px]">
-                    Date:
-                  </p>
-                  <p className="text-white ml-2 ">
-                    {certificateData.user_details.event_date}
-                  </p>
-                </div>
-                <div className="flex items-center py-2">
-                  <p className="text-gray-400 font-medium min-w-[100px]">
-                    Department:
-                  </p>
-                  <p className="text-white ml-2 ">
-                    {certificateData.user_details.department}
-                  </p>
-                </div>
-                <div className="flex items-center py-2">
-                  <p className="text-gray-400 font-medium min-w-[100px]">
-                    Semester:
-                  </p>
-                  <p className="text-white ml-2 ">
-                    {certificateData.user_details.semester}
-                  </p>
-                </div>
-                <div className="flex items-center py-2">
-                  <p className="text-gray-400 font-medium min-w-[100px]">
-                    Type:
-                  </p>
-                  <p className="text-white ml-2 ">
-                    {certificateData.user_details.type_of_certificate || ""}
-                  </p>
-                </div>
-                <div className="flex items-center py-2">
-                  <p className="text-gray-400 font-medium min-w-[100px]">
-                    Notes:
-                  </p>
-                  <p className="text-white ml-2 ">
-                    {certificateData.user_details.notes}
-                  </p>
-                </div>
+          {/* Body */}
+          <div className="space-y-8 p-6 md:p-8">
+            {/* Verification Form */}
+            {renderVerificationForm(
+              certificateData ? "Verify Another" : "Verify Certificate"
+            )}
+
+            {/* Loading */}
+            {loading && (
+              <div className="flex justify-center py-10">
+                <Loading />
               </div>
-            </div>
+            )}
 
-            {/* Certificate Actions */}
-            <div className="bg-gray-800 bg-opacity-50 backdrop-blur-md p-6 rounded-xl shadow-inner transition-all hover:bg-opacity-70">
-              <h3 className="text-2xl font-semibold text-white mb-4">
-                Certificate
-              </h3>
-              <div className="flex flex-col sm:flex-row justify-center gap-6">
-                <a
-                  href={certificateData.certificate_details.view_link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  title="View certificate in a new tab"
-                  className="flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all transform hover:scale-105 active:scale-95 w-full sm:w-auto"
-                >
-                  <Eye size={20} /> View
-                </a>
+            {/* Error */}
+            {!loading && error && (
+              <div className="rounded-2xl border border-red-500/20 bg-red-500/10 p-8 text-center">
+                <AlertTriangle className="mx-auto mb-4 h-14 w-14 text-red-400" />
 
-                <div className="hidden md:flex">
+                <h2 className="text-2xl font-bold text-red-300">
+                  Verification Failed
+                </h2>
+
+                <p className="mt-3 text-gray-300">{error}</p>
+              </div>
+            )}
+
+            {/* Success */}
+            {!loading && certificateData && (
+              <>
+                {/* Success Banner */}
+                <div className="rounded-2xl border border-green-500/20 bg-green-500/10 p-6 text-center">
+                  <h2 className="text-3xl font-bold text-green-400">
+                    Valid Certificate
+                  </h2>
+
+                  <p className="mt-2 text-gray-300">
+                    This certificate has been successfully verified.
+                  </p>
+                </div>
+
+                {/* Details */}
+                <div className="rounded-2xl border border-white/10 bg-black/20 p-6">
+                  <h3 className="mb-6 text-2xl font-semibold">
+                    Certificate Details
+                  </h3>
+
+                  <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
+                    <DetailItem
+                      label="Name"
+                      value={certificateData?.NAME}
+                    />
+
+                    <DetailItem
+                      label="Certificate ID"
+                      value={certificateData?.CERT_ID}
+                    />
+
+                    <DetailItem
+                      label="Event"
+                      value={
+                        certificateData?.EVENT_SHEET ||
+                        certificateData?.EVENT ||
+                        "-"
+                      }
+                    />
+                  </div>
+                </div>
+
+                {/* Action Buttons */}
+                {certificateViewLink && (
+                  <div className="flex flex-col gap-4 sm:flex-row">
+                    <a
+                      href={certificateViewLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-indigo-600 px-6 py-4 font-semibold transition hover:bg-indigo-500"
+                    >
+                      <Eye size={20} />
+                      View Certificate
+                    </a>
+
+                    <a
+                      href={certificateViewLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-emerald-600 px-6 py-4 font-semibold transition hover:bg-emerald-500"
+                    >
+                      <Download size={20} />
+                      Download Certificate
+                    </a>
+                  </div>
+                )}
+
+                {/* PDF Preview */}
+                {mergedPdfPreview && (
+                  <div className="overflow-hidden rounded-2xl border border-white/10 bg-black/20">
+                    <div className="border-b border-white/10 px-5 py-4">
+                      <h3 className="text-xl font-semibold">
+                        Certificate Preview
+                      </h3>
+                    </div>
+
+                    <iframe
+                      title="Certificate Preview"
+                      src={mergedPdfPreview}
+                      className="h-[750px] w-full bg-white"
+                    />
+                  </div>
+                )}
+
+                {/* LinkedIn Certificate Add */}
+                <div className="flex justify-center">
                   <a
-                    href={certificateData.certificate_details.download_link}
+                    href={linkedInCertificateUrl.toString()}
                     target="_blank"
                     rel="noopener noreferrer"
-                    title="Download certificate"
-                    className="flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all transform hover:scale-105 active:scale-95 w-full sm:w-auto"
+                    className="rounded-2xl bg-blue-700 px-6 py-3 font-semibold transition hover:bg-blue-600"
                   >
-                    <Download size={20} /> Download
+                    Add Certificate to LinkedIn
                   </a>
                 </div>
-              </div>
-            </div>
+              </>
+            )}
           </div>
-        )}
+        </div>
       </div>
     </div>
   );

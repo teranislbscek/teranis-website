@@ -30,9 +30,9 @@ function App() {
             <ParticlesComponent />
             <Routes>
               <Route path="/" element={<Homepage />} />
-              <Route path="/verify" element={<CertificateVerifier />} />
-              <Route path="/certificates26" element={<Certificates />} />
-              <Route path="/magazine26" element={<FlipbookEmbed />} />
+              <Route path="/certificates" element={<Certificates />} />
+              <Route path="/certificates/verify" element={<CertificateVerifier />} />
+              <Route path="/magazine" element={<FlipbookEmbed />} />
             </Routes>
           </>
         )}
