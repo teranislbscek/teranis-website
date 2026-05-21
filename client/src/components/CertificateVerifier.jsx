@@ -35,6 +35,35 @@ const getCertificateTitle = (sheetName, fallback = "Teranis") => {
   return `${normalizedName.replace(/_/g, " ")} Certificate`;
 };
 
+const getSheetSuffix = (sheetName) =>
+  String(sheetName || "")
+    .trim()
+    .toUpperCase()
+    .replace(/[^A-Z0-9]+/g, "_")
+    .replace(/^_+|_+$/g, "");
+
+const getCertificateValue = (data, fieldBaseName, sheetName) => {
+  if (!data) return "";
+
+  const suffix = getSheetSuffix(sheetName);
+  const candidates = suffix
+    ? [
+        `${fieldBaseName}_${suffix}`,
+        `${fieldBaseName}__${suffix}`,
+        `${fieldBaseName}`,
+      ]
+    : [fieldBaseName];
+
+  for (const key of candidates) {
+    const value = data[key];
+    if (value && String(value).trim()) {
+      return String(value).trim();
+    }
+  }
+
+  return "";
+};
+
 const CertificateVerifier = () => {
   const query = useQuery();
 
@@ -70,12 +99,12 @@ const CertificateVerifier = () => {
       if (response.data?.valid) {
         setCertificateData(response.data.data);
       } else {
-        setError("Certificate not found or invalid.");
+        setError("Page doesn't exist.");
       }
     } catch (err) {
       console.error(err);
 
-      setError("Failed to verify certificate.");
+      setError("Page doesn't exist.");
     } finally {
       setLoading(false);
     }
@@ -93,33 +122,42 @@ const CertificateVerifier = () => {
     fetchCertificateInfo(inputCertId);
   };
 
+  const certificateSheetName = certificateData?.EVENT_SHEET || certificateData?.EVENT;
+
+  const mergedDocId = getCertificateValue(
+    certificateData,
+    "MERGED_DOC_ID",
+    certificateSheetName
+  );
+
+  const mergedDocUrl = getCertificateValue(
+    certificateData,
+    "MERGED_DOC_URL",
+    certificateSheetName
+  );
+
+  const mergedDocLink = getCertificateValue(
+    certificateData,
+    "LINK_TO_MERGED_DOC",
+    certificateSheetName
+  );
+
   const certificateViewLink =
-    certificateData?.QR ||
-    certificateData?.PDF_URL ||
-    certificateData?.MERGED_DOC_URL ||
-    "";
-
-  const mergedDocId =
-    certificateData?.MERGED_DOC_ID_COORDINATORS ||
-    certificateData?.MERGED_DOC_ID ||
-    certificateData?.MERGED_DOC_ID__COORDINATORS;
-
-  const mergedDocUrl =
-    certificateData?.MERGED_DOC_URL_COORDINATORS ||
-    certificateData?.MERGED_DOC_URL ||
-    certificateData?.MERGED_DOC_URL__COORDINATORS;
+    mergedDocUrl || mergedDocLink || certificateData?.PDF_URL || "";
 
   const mergedPdfPreview = mergedDocId
     ? `https://drive.google.com/file/d/${mergedDocId}/preview`
-    : mergedDocUrl || null;
+    : mergedDocUrl || mergedDocLink || null;
+
+  const mergedPdfDownload = mergedDocId
+    ? `https://drive.google.com/uc?export=download&id=${mergedDocId}`
+    : mergedDocUrl || mergedDocLink || certificateViewLink || "";
 
   const verificationUrl = `${window.location.origin}/verify?id=${encodeURIComponent(
     certificateData?.CERT_ID || inputCertId
   )}`;
 
-  const certificateTitle = `${
-    getCertificateTitle(certificateData?.EVENT_SHEET || certificateData?.EVENT)
-  }`;
+  const certificateTitle = getCertificateTitle(certificateSheetName);
 
   const certificatePdfMedia =
     mergedPdfPreview || mergedDocUrl || certificateViewLink || verificationUrl;
@@ -205,10 +243,19 @@ const CertificateVerifier = () => {
                 <AlertTriangle className="mx-auto mb-4 h-14 w-14 text-red-400" />
 
                 <h2 className="text-2xl font-bold text-red-300">
-                  Verification Failed
+                  Page doesn't exist
                 </h2>
 
                 <p className="mt-3 text-gray-300">{error}</p>
+
+                <div className="mt-6 flex justify-center">
+                  <a
+                    href="/"
+                    className="rounded-2xl bg-cyan-600 px-6 py-3 font-semibold transition hover:bg-cyan-500"
+                  >
+                    Go to Home
+                  </a>
+                </div>
               </div>
             )}
 
@@ -255,26 +302,26 @@ const CertificateVerifier = () => {
                 </div>
 
                 {/* Action Buttons */}
-                {certificateViewLink && (
+                {(mergedPdfPreview || mergedPdfDownload) && (
                   <div className="flex flex-col gap-4 sm:flex-row">
                     <a
-                      href={certificateViewLink}
+                      href={mergedPdfPreview || mergedPdfDownload}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-indigo-600 px-6 py-4 font-semibold transition hover:bg-indigo-500"
                     >
                       <Eye size={20} />
-                      View Certificate
+                      View PDF
                     </a>
 
                     <a
-                      href={certificateViewLink}
+                      href={mergedPdfDownload || mergedPdfPreview}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-emerald-600 px-6 py-4 font-semibold transition hover:bg-emerald-500"
                     >
                       <Download size={20} />
-                      Download Certificate
+                      Download PDF
                     </a>
                   </div>
                 )}

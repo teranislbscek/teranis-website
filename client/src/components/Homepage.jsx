@@ -167,6 +167,13 @@ const Homepage = () => {
             className="flex gap-4 mt-10 flex-wrap justify-center z-20"
           >
             <a
+              href="/certificates/verify"
+              className="group relative inline-flex items-center gap-2 px-8 py-3.5 font-semibold text-sm tracking-wide text-black rounded-full bg-white hover:bg-gray-100 transition-all duration-300 shadow-lg shadow-white/10 hover:shadow-white/20 hover:-translate-y-0.5"
+            >
+              VERIFY CERTIFICATE
+              <svg className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+            </a>
+            <a
               href="/magazine26"
               className="group relative inline-flex items-center gap-2 px-8 py-3.5 font-semibold text-sm tracking-wide text-white rounded-full bg-cyan-600 hover:bg-cyan-500 transition-all duration-300 shadow-lg shadow-cyan-900/30 hover:shadow-cyan-800/40 hover:-translate-y-0.5"
             >
@@ -289,7 +296,7 @@ const Homepage = () => {
         <div className="max-w-7xl mx-auto px-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-16">
             <div>
-              <h3 className="text-2xl font-bold mb-6 text-cyan-400 tracking-wide uppercase text-sm">About Teranis</h3>
+              <h3 className="text-2xl font-bold mb-6 text-cyan-400 tracking-wide uppercase">About Teranis</h3>
               <p className="text-gray-400 text-sm leading-relaxed">
                 Teranis26 is a grand celebration of technology and innovation,
                 bringing together brilliant minds from across the region. Join
@@ -298,7 +305,7 @@ const Homepage = () => {
               </p>
             </div>
             <div>
-              <h3 className="text-2xl font-bold mb-6 text-cyan-400 tracking-wide uppercase text-sm">Quick Links</h3>
+              <h3 className="text-2xl font-bold mb-6 text-cyan-400 tracking-wide uppercase">Quick Links</h3>
               <ul className="space-y-2">
                 <ul>
                   {["Home", "Events", "About", "Contact"].map((link, index) => (
@@ -316,7 +323,7 @@ const Homepage = () => {
             </div>
 
             <div>
-              <h3 className="text-2xl font-bold mb-6 text-cyan-400 tracking-wide uppercase text-sm">Contact Us</h3>
+              <h3 className="text-2xl font-bold mb-6 text-cyan-400 tracking-wide uppercase">Contact Us</h3>
               <p className="text-sm text-gray-400 mb-4">
                 <strong>Email:</strong> teranis@lbscek.ac.in
               </p>
