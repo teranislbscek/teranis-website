@@ -1,22 +1,21 @@
 import React from "react";
-import { ClipLoader } from "react-spinners";
-import { motion } from "framer-motion";
+import BlurText from "./BlurText";
 
 const LoadingScreen = () => {
+  const handleAnimationComplete = () => {
+    console.log('Animation completed!');
+  };
+
   return (
     <div className="flex flex-col justify-center items-center w-screen h-screen bg-black text-white">
-      {/* Animated Text */}
-      <motion.h1
-        className="text-2xl md:text-4xl font-bold text-cyan-400 mb-6"
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 1, repeat: Infinity, repeatType: "reverse" }}
-      >
-        Teranis 2K25
-      </motion.h1>
-
-      {/* Slowed-down Loader */}
-      {/* <ClipLoader size={50} color={"#00bcd4"} loading={true} speedMultiplier={0.5} /> */}
+      <BlurText
+        text="Teranis 2K26"
+        delay={100}
+        animateBy="letters"
+        direction="top"
+        onAnimationComplete={handleAnimationComplete}
+        className="text-4xl md:text-6xl font-extrabold text-cyan-400 drop-shadow-[0_0_15px_rgba(34,211,238,0.8)] mb-8"
+      />
     </div>
   );
 };

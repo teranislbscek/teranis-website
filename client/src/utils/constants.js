@@ -2,7 +2,7 @@ const eventsData = {
   "Technical Events": [
     {
       "title": "Debugging in Python",
-      "date": "March 5, 2025",
+      "date": "March 5, 2026",
       "location": "Auditorium",
       "contact": [
         {"name": "Umar", "phno": "9037868807"},
@@ -21,7 +21,7 @@ const eventsData = {
     },
     {
       "title": "Code with ChatGPT",
-      "date": "April 12, 2025",
+      "date": "April 12, 2026",
       "location": "Computer Lab",
       "contact": [
         {"name": "Jacob", "phno": "9605980433"},
@@ -47,7 +47,7 @@ const eventsData = {
     },
     {
       "title": "Fast Coding in C",
-      "date": "May 10, 2025",
+      "date": "May 10, 2026",
       "location": "Cyber Lab",
       "contact": [
         {"name": "Sidharth", "phno": "9074652995"},
@@ -70,7 +70,7 @@ const eventsData = {
     },
     {
       "title": "Shuffle Code",
-      "date": "July 15, 2025",
+      "date": "July 15, 2026",
       "location": "Innovation Hub",
       "contact": [
         {"name": "Shivanand", "phno": "9778252544"},
@@ -91,7 +91,7 @@ const eventsData = {
     },
     {
       "title": "Swap Code",
-      "date": "August 20, 2025",
+      "date": "August 20, 2026",
       "location": "Main Hall",
       "contact": [
         {"name": "Umar", "phno": "9037868807"},
@@ -118,7 +118,7 @@ const eventsData = {
     },
     {
       "title": "Schrödinger's Program",
-      "date": "June 1, 2025",
+      "date": "June 1, 2026",
       "location": "Tech Park",
       "contact": [
         {"name": "Yousuf", "phno": "9594769391"},
@@ -135,7 +135,7 @@ const eventsData = {
   //   "Inter-Department Events": [
   //     {
   //       title: "Logo Quiz (Offline)",
-  //       date: "March 15, 2025",
+  //       date: "March 15, 2026",
   //       location: "Main Hall",
   //       contact: "Michael - 9876543212",
   //       formLink: "#",
@@ -146,7 +146,7 @@ const eventsData = {
   //     },
   //     {
   //       title: "Poster Presentation (Offline)",
-  //       date: "March 22, 2025",
+  //       date: "March 22, 2026",
   //       location: "Seminar Hall",
   //       contact: "Emily - 9876543213",
   //       formLink: "#",
@@ -157,7 +157,7 @@ const eventsData = {
   //     },
   //     {
   //       title: "Problem Solving (Offline)",
-  //       date: "April 5, 2025",
+  //       date: "April 5, 2026",
   //       location: "Innovation Hub",
   //       contact: "Nathan - 9876543214",
   //       formLink: "#",
@@ -168,7 +168,7 @@ const eventsData = {
   //     },
   //     {
   //       title: "Photography (Online)",
-  //       date: "May 18, 2025",
+  //       date: "May 18, 2026",
   //       location: "Online Submission",
   //       contact: "Olivia - 9876543215",
   //       formLink: "#",
@@ -178,7 +178,7 @@ const eventsData = {
   //     },
   //     {
   //       title: "Aptitude Test (Offline)",
-  //       date: "June 10, 2025",
+  //       date: "June 10, 2026",
   //       location: "Exam Hall",
   //       contact: "Sophia - 9876543220",
   //       formLink: "#",
@@ -188,7 +188,7 @@ const eventsData = {
   //     },
   //     {
   //       title: "Spell-B (Offline)",
-  //       date: "June 25, 2025",
+  //       date: "June 25, 2026",
   //       location: "Library Hall",
   //       contact: "Daniel - 9876543221",
   //       formLink: "#",
@@ -199,7 +199,7 @@ const eventsData = {
   //     },
   //     {
   //       title: "Geoguessr LBSCEK",
-  //       date: "July 5, 2025",
+  //       date: "July 5, 2026",
   //       location: "Tech Hall",
   //       contact: "Ethan - 9876543222",
   //       formLink: "#",
@@ -210,7 +210,7 @@ const eventsData = {
   //     },
   //     {
   //       title: "Tech Memes",
-  //       date: "July 20, 2025",
+  //       date: "July 20, 2026",
   //       location: "Online Submission",
   //       contact: "Lily - 9876543223",
   //       formLink: "#",
@@ -220,7 +220,7 @@ const eventsData = {
   //     },
   //     {
   //       title: "Non-Stop Talking Challenge",
-  //       date: "August 10, 2025",
+  //       date: "August 10, 2026",
   //       location: "Auditorium",
   //       contact: "Ryan - 9876543224",
   //       formLink: "#",
@@ -231,7 +231,7 @@ const eventsData = {
   //     },
   //     {
   //       title: "Write Disadvantages of Social Media (Online)",
-  //       date: "August 25, 2025",
+  //       date: "August 25, 2026",
   //       location: "Online Submission",
   //       contact: "Sophia - 9876543225",
   //       formLink: "#",
@@ -244,7 +244,7 @@ const eventsData = {
   //   "Year-wise Events": [
   //     {
   //       title: "Debugging in C",
-  //       date: "March 5, 2025",
+  //       date: "March 5, 2026",
   //       location: "Computer Lab",
   //       contact: "Daniel - 9876543220",
   //       formLink: "#",
@@ -255,7 +255,7 @@ const eventsData = {
   //     },
   //     {
   //       title: "Guess the Output in Python",
-  //       date: "April 12, 2025",
+  //       date: "April 12, 2026",
   //       location: "Tech Hub",
   //       contact: "Sophia - 9876543221",
   //       formLink: "#",
@@ -265,7 +265,7 @@ const eventsData = {
   //     },
   //     {
   //       title: "Data Structures Quiz in Mentee Meter",
-  //       date: "May 10, 2025",
+  //       date: "May 10, 2026",
   //       location: "Online",
   //       contact: "Liam - 9876543222",
   //       formLink: "#",
@@ -276,7 +276,7 @@ const eventsData = {
   //     },
   //     {
   //       title: "Kon Banega Crorepati",
-  //       date: "June 1, 2025",
+  //       date: "June 1, 2026",
   //       location: "Auditorium",
   //       contact: "Emma - 9876543223",
   //       formLink: "#",
@@ -287,7 +287,7 @@ const eventsData = {
   //     },
   //     {
   //       title: "Suggestions for Changes Required in B.Tech Syllabus (Online)",
-  //       date: "June 20, 2025",
+  //       date: "June 20, 2026",
   //       location: "Online Submission",
   //       contact: "Olivia - 9876543224",
   //       formLink: "#",
