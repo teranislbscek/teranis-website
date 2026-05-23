@@ -1,5 +1,10 @@
 import { useState, useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation,
+} from "react-router-dom";
 import Homepage from "./components/Homepage";
 import Navbar from "./components/Navbar";
 import ParticlesComponent from "./components/ParticlesComponent";
@@ -7,6 +12,8 @@ import LoadingScreen from "./components/LoadingScreen";
 import CertificateVerifier from "./components/CertificateVerifier"; // Import Verifier Component
 import Certificates from "./components/Certificates";
 import FlipbookEmbed from "./components/FlipbookEmbed";
+import VerifyRedirect from "./components/VerifyRedirect";
+import { Analytics } from "@vercel/analytics/react";
 
 const LOADING_SCREEN_COOLDOWN_MS = 24 * 60 * 60 * 1000;
 
@@ -74,8 +81,15 @@ function App() {
     return () => clearTimeout(timer);
   }, [loading]);
 
-  return (
-    <Router>
+  function AppContent() {
+    const location = useLocation();
+    const isVerifyRoute = location.pathname.startsWith("/verify");
+
+    if (isVerifyRoute) {
+      return <VerifyRedirect />;
+    }
+
+    return (
       <div className="app-container h-auto flex gap-4 flex-col font-sophia justify-between items-center text-white">
         {loading ? (
           <LoadingScreen />
@@ -93,6 +107,13 @@ function App() {
           </>
         )}
       </div>
+    );
+  }
+
+  return (
+    <Router>
+      <AppContent />
+      <Analytics />
     </Router>
   );
 }
