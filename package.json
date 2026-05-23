@@ -1,0 +1,13 @@
+{
+  "name": "teranis-monorepo",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev:client": "pnpm --dir client dev",
+    "build:client": "pnpm --dir client build",
+    "dev:verify": "pnpm --dir verify dev",
+    "build:verify": "pnpm --dir verify build",
+    "build": "pnpm build:client && pnpm build:verify"
+  }
+}

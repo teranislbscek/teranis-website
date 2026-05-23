@@ -1,40 +1,73 @@
 # Teranis 2026 Website
 
+# Teranis Monorepo
+
 ## Overview
-Teranis is a frontend-only TechFest website that presents event information, highlights, certificates, and related festival content.
 
-## Important Verification Route
-> Legacy certificate QR codes should use the verification endpoint at /verify?uc=<id>.
-> The QR domain verify.teranis.in is reserved for this flow and hard-codes redirects to the active verification year.
+Teranis is organized as a small monorepo with two independent frontend apps: the main Teranis website and a dedicated certificate verification app.
 
-##  Features
-- **TechFest Information Hub** – Showcases the festival, events, and important details
-- **Event section** – Present event information, schedules, and related content
-- **Certificate Verification Redirect** – Supports legacy QR codes through `/verify?uc=<id>` and the `verify.teranis.in` QR domain, which hard-codes redirects to the active verification year
-- **Magazine / Media Section** – Includes festival media and embedded content
+## Structure
 
-## Tech Stack
-- **Frontend:** React.js / Vite
-- **Deployment:** Vercel
-
-## Setup & Installation
-### Clone the Repository
-```bash
-git clone https://github.com/UmarAlMukhtar/teranis.git
-cd teranis
+```txt
+repo/
+├── client/   -> teranis.in
+├── verify/   -> verify.teranis.in
+└── README.md
 ```
 
-### Install Dependencies
+## Apps
+
+- **client/** - Main Teranis website with festival information, highlights, and media.
+- **verify/** - Permanent verification app for certificate QR codes and direct certificate links.
+
+## Deployment
+
+- Deploy [client](client) with Vercel root directory set to `client`.
+- Deploy [verify](verify) with Vercel root directory set to `verify`.
+- Recommended domain mapping:
+
+```txt
+client/  -> teranis.in
+verify/  -> verify.teranis.in
+```
+
+## Verification Routing
+
+- Legacy certificate links continue to use `/verify?uc=<id>` in the main website.
+- `verify.teranis.in` is the permanent QR domain for certificate verification.
+- 2025 verification is hardcoded for backward compatibility.
+- 2026 is the current certificate year, and newer years are routed through the registry in the verify app.
+
+## Local Development
+
+Install once from the repository root:
+
 ```bash
 pnpm install
 ```
-### Running the Project
-#### **Start Frontend**
+
+Run either app directly:
+
 ```bash
-cd client
-pnpm dev
+pnpm dev:client
+pnpm dev:verify
+```
+
+Build both apps:
+
+```bash
+pnpm build
 ```
 
 ## Contributors
+
+- **Umar Al Mukhtar Ibrahimkutty** - [GitHub](https://github.com/UmarAlMukhtar)
+
+```bash
+pnpm build
+```
+
+## Contributors
+
 - **Umar Al Mukhtar Ibrahimkutty** - [GitHub](https://github.com/UmarAlMukhtar)
 
