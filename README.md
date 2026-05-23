@@ -1,84 +1,40 @@
-# TechFest App (Teranis)
+# Teranis 2026 Website
 
-## 🚀 Overview
-TechFest App (Teranis) is an all-in-one platform for managing college tech fest events, including registrations, competition hosting, live leaderboards, and automated rule enforcement.
+## Overview
+Teranis is a frontend-only TechFest website that presents event information, highlights, certificates, and related festival content.
 
-## 📌 Features
-- **User Authentication** – Google login, email/password (Firebase/Auth0)
-- **Event Registration System** – Users sign up for competitions, view schedules
-- **Dashboard & Profiles** – Track registrations, results, and announcements
-- **Admin Panel** – Manage users, check-in participants, update scores
-- **Live Updates & Notifications** – Firebase Cloud Messaging (FCM) for real-time updates
-- **QR Code Entry** – Generate QR codes for check-in
-- **Leaderboard & Results** – Display winners and rankings
-- **Competition Module** – Custom rules, AI restriction detection, automated scoring
+## Important Verification Route
+> Legacy certificate QR codes should use the verification endpoint at /verify?uc=<id>.
+> The QR domain verify.teranis.in is reserved for this flow and hard-codes redirects to the active verification year.
 
-## 🏗️ Tech Stack
-- **Frontend:** React.js / Next.js
-- **Backend:** Express.js + Node.js
-- **Database:** MongoDB (Mongoose ORM)
-- **Authentication:** Firebase/Auth0
-- **Real-time Updates:** Socket.io + Firebase Cloud Messaging (FCM)
-- **Deployment:** Vercel (Frontend) + Render/Heroku (Backend)
+##  Features
+- **TechFest Information Hub** – Showcases the festival, events, and important details
+- **Event section** – Present event information, schedules, and related content
+- **Certificate Verification Redirect** – Supports legacy QR codes through `/verify?uc=<id>` and the `verify.teranis.in` QR domain, which hard-codes redirects to the active verification year
+- **Magazine / Media Section** – Includes festival media and embedded content
 
-## 🛠️ Setup & Installation
-### 1️⃣ Clone the Repository
+## Tech Stack
+- **Frontend:** React.js / Vite
+- **Deployment:** Vercel
+
+## Setup & Installation
+### Clone the Repository
 ```bash
 git clone https://github.com/UmarAlMukhtar/teranis.git
 cd teranis
 ```
 
-### 2️⃣ Install Dependencies
-#### **Frontend**
+### Install Dependencies
 ```bash
-cd client
-npx create-next-app@latest .
-npm install axios firebase
+pnpm install
 ```
-
-#### **Backend**
-```bash
-cd ../server
-npm init -y
-npm install express mongoose dotenv cors firebase-admin socket.io
-```
-
-### 3️⃣ Environment Variables
-Create `.env.local` in `client` and `.env` in `server`.
-
-#### **Frontend (`client/.env.local`)**
-```
-NEXT_PUBLIC_FIREBASE_API_KEY=your_firebase_key
-NEXT_PUBLIC_API_URL=http://localhost:5000
-```
-
-#### **Backend (`server/.env`)**
-```
-PORT=5000
-MONGO_URI=your_mongodb_connection_string
-FIREBASE_ADMIN_KEY=./firebase-admin-key.json
-```
-
-### 4️⃣ Running the Project
-#### **Start Backend**
-```bash
-cd server
-node server.js
-```
-
+### Running the Project
 #### **Start Frontend**
 ```bash
 cd client
-npm run dev
+pnpm dev
 ```
 
-## 🔥 Contributors
-- **Umar Al Mukhtar Ibrahimkutty** (Lead Developer)
-- [Other Contributors]
-
-## 📜 License
-This project is licensed under the MIT License.
-
----
-🚀 **Need help?** Open an issue or contribute to the repo!
+## Contributors
+- **Umar Al Mukhtar Ibrahimkutty** - [GitHub](https://github.com/UmarAlMukhtar)
 
