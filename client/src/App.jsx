@@ -13,6 +13,7 @@ import CertificateVerifier from "./components/CertificateVerifier"; // Import Ve
 import Certificates from "./components/Certificates";
 import FlipbookEmbed from "./components/FlipbookEmbed";
 import VerifyRedirect from "./components/VerifyRedirect";
+import { Analytics } from "@vercel/analytics/react";
 
 const LOADING_SCREEN_COOLDOWN_MS = 24 * 60 * 60 * 1000;
 
@@ -112,6 +113,7 @@ function App() {
   return (
     <Router>
       <AppContent />
+      <Analytics />
     </Router>
   );
 }
